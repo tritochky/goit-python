@@ -1,8 +1,4 @@
-if __name__ == '__main__':
-
-    n = int(input("Введите номер вычисляемого члена: "))
-
-    def fibonacci(n):
+def fibonacci(n):
         """Fibonacci function"""
         if n == 1:
             return 0
@@ -11,4 +7,8 @@ if __name__ == '__main__':
         else:
             return fibonacci(n-1) + fibonacci(n-2)
 
+
+if __name__ == '__main__':
+
+    n = int(input("Введите номер вычисляемого члена: "))
     print(fibonacci(n))
