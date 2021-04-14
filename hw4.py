@@ -1,12 +1,10 @@
 import os
 import sys
 
-#Это первый аргумент, считаем, что это валидный адрес в файловой сиситеме
 path = sys.argv[1]
 string = 'Start in {}'.format(path)
 print(string)
 
-#Это список имен файлов и папок в path.
 files = os.listdir(path)
 
 IMAGES = []
