@@ -1,57 +1,57 @@
-import pathlib
+import os
 import sys
 
+#Это первый аргумент, считаем, что это валидный адрес в файловой сиситеме
+path = sys.argv[1]
+string = 'Start in {}'.format(path)
+print(string)
 
-def sort_files():
-    if item.endwith(['jpeg', 'png', 'jpg', 'svg']):
-        images = images.append(item.name)
-    elif item.endwith(['avi', 'mp4', 'mov', 'mkv']):
-        videos = videos.append(item.name)
-    elif item.endwith(['doc', 'docx', 'txt', 'pdf', 'xlsx', 'pptx']):
-        documents = documents.append(item.name)
-    elif item.endwith(['mp3', 'ogg', 'wav', 'amr']):
-        musics = musics.append(item.name)
-    elif item.endwith(['zip', 'gz', 'tar']):
-        archives = archives.append(item.name)
-    else:
-        unknown = unknown.append(item.name)
-    return sort_files()
+#Это список имен файлов и папок в path.
+files = os.listdir(path)
 
+IMAGES = []
+AUDIO = []
+VIDEO = []
+DOCUMENTS = []
+OTHER = []
+EXTENSIONS = set()
 
-def run_through_dir():
-    for item in path.iterdir():
-        if item.is_file():
-            sort_files()
-        else:
-            run_through_dir()
-    return  run_through_dir()
+REGISTERED_EXTENSIONS = {
+    'JPEG': IMAGES,
+    'PNG': IMAGES,
+    'JPG': IMAGES,
+    'AVI': VIDEO,
+    'MP4': VIDEO,
+    'MOV': VIDEO,
+    'DOC': DOCUMENTS,
+    'DOCX': DOCUMENTS,
+    'TXT': DOCUMENTS,
+    'MP3': AUDIO,
+    'OGG': AUDIO,
+    'WAV': AUDIO,
+    'AMR': AUDIO,
+}
+for file in files:
+    unknown = True
+    for extension in REGISTERED_EXTENSIONS.items():
+        ext, container = extension
+        if file.upper().endswith(ext):
+            EXTENSIONS.add(ext)
+            container.append(file)
+            unknown = False
+            break
+    if unknown:
+        OTHER.append(file)
 
-
-if __name__ == '__main__':
-
-    images = []
-    videos = []
-    documents = []
-    musics = []
-    archives = []
-    unknown = []
-
-    files = {('jpeg', 'png', 'jpg', 'svg'): "images", ('avi', 'mp4', 'mov', 'mkv'): "videos", ('doc', 'docx', 'txt', 'pdf', 'xlsx', 'pptx'): "documents", ('mp3', 'ogg', 'wav', 'amr'): "musics", ('zip', 'gz', 'tar'): "archives"}
-
-    if len(sys.argv) < 2:
-        user_dir = ""
-    else:       
-        user_dir = sys.argv[1]
-    
-    path = pathlib.Path(user_dir)
-
-    if path.exists():
-        if path.is_dir():
-            run_through_dir             
-        else:
-            sort_files()
-    else:
-        print(f'path {path.absolute()} not exists')
-
-    print(''.join(images) + ' '.join(videos) + ' '.join(documents) + ' '.join(musics) + ' '.join(archives) + ' '.join(unknown))
-
+img = "Images: {}".format(IMAGES)
+print(img)
+vid = "Video files: {}".format(VIDEO)
+print(vid)
+doc = "Documents: {}".format(DOCUMENTS)
+print(doc)
+aud = "Audio files: {}".format(AUDIO)
+print(aud)
+know = "Unknown files: {}".format(OTHER)
+print(know)
+other = "There are files of types: {}".format(EXTENSIONS)
+print(other)
