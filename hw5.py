@@ -8,5 +8,10 @@ def normaliz(line):
     return clear_line
 
 
-line = input("Write: ")
-print(normaliz(line))
+def main():
+    line = input("Write: ")
+    print(normaliz(line))
+    
+
+if __name__ == "__main__":
+    main()
