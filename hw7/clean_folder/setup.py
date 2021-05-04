@@ -9,5 +9,5 @@ setup(name='clean_folder',
       author='Olga Fomenko',
       author_email='helga.fomenko@gmail.com',
       license='Public domain software',
-      packages=['clean_folder']
+      packages=find_packages()
     )
