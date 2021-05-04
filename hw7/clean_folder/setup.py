@@ -1,6 +1,7 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
-setup(name='clean_folder',
+setup(
+      name='clean_folder',
       version='1.0.0',
       description='Remove files to folders',
       entry_points={
@@ -8,6 +9,5 @@ setup(name='clean_folder',
       url='',
       author='Olga Fomenko',
       author_email='helga.fomenko@gmail.com',
-      license='Public domain software',
       packages=find_packages()
     )
