@@ -1,14 +1,12 @@
 from collections import UserDict
 
 
-class AddressBook(UserDict):
-    
+class AddressBook(UserDict):    
     def add_record(self, record):
         self.data[record.name.name] = record
 
         
 class Record:
-
     def __init__(self, name):
         self.name = name
         self.phones = []
@@ -31,12 +29,10 @@ class Field:
 
 
 class Name(Field):
-
     def __init__(self, name):
         self.name = name
     
 
 class Phone(Field):
-
     def __init__(self, phone):
         self.phone = phone
