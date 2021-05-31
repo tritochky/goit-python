@@ -72,6 +72,7 @@ class Name(Field):
 
 class Birthday(Field):
     def __init__(self, birthday):
+        self.__birthday = None
         self.birthday = birthday
 
     @property
@@ -88,6 +89,7 @@ class Birthday(Field):
 
 class Phone(Field):
     def __init__(self, phone):
+        self.__phone = None
         self.phone = phone
 
     @property
