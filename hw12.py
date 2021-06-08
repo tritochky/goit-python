@@ -1,11 +1,16 @@
 from collections import UserDict
 from datetime import datetime, timedelta
 import json
+import pickle
 
 
 class AddressBook(UserDict): 
     def add_record(self, record):
-        self.data[record.name.name] = record
+        self.data[record.name] = record
+        print('A new record added for ', self.data[record.name].name)
+        
+    def all_records(self):
+        return self.data
 
     def __iter__(self):
         self.number = 0
@@ -37,10 +42,10 @@ class AddressBook(UserDict):
 
         
 class Record:
-    def __init__(self, name, phone=[], birthday=None):
+    def __init__(self, name, phone='', birthday=None):
         self.name = name
         self.phones = []
-        self.new_phone = ''
+        self.new_phone = phone
         self.birthday = birthday
 
     def add_birthday(self, birthday):
@@ -120,4 +125,32 @@ class Phone(Field):
             raise Exception('Only number, please')
         else:
             self._value = new_value
+            
+            
+def read_dumped_data():
+    with open(address_book_file, 'rb') as file:
+        book = pickle.load(file)
+        return book
 
+def save_dumped_data(addresses):
+    with open(address_book_file, 'wb') as file:
+        pickle.dump(addresses, file)
+
+def adding_new_record():
+    new_record = input('For adding a new record type `add record <name> <phone> <birthday>`')
+    new_record_to_add = new_record.split()
+    _, __, name, phone = new_record_to_add
+    address_book = AddressBook()
+    address_book.add_record(Record(name.strip(), phone, '18-12-1990'))
+    save_dumped_data(address_book.all_records())
+
+    
+if __name__ == '__main__':
+    try:
+        records_book = read_dumped_data()
+        print('Records book existed', records_book)
+        adding_new_record()
+    except EOFError:
+        print('No saved addresses book found')
+        adding_new_record()
+        
