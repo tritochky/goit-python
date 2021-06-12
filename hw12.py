@@ -10,6 +10,7 @@ import sys
 address_book_file = 'data.bin'
 pattern_birthday = r'\d\d-\d\d-\d\d\d\d'
 ​
+#Создаю классы
 
 class AddressBook(UserDict): 
     def add_record(self, record):
@@ -23,6 +24,7 @@ class AddressBook(UserDict):
         self.number = 0
         return self
 ​
+# итератор для пагинации
     def __next__(self):
         n = input(int('How much recordes do show? '))
         i = 0
@@ -141,7 +143,8 @@ class Phone(Field):
         else:
             self._value = '+' + new_value
 ​
-
+ #Дальше основной код
+    
 def input_error(func):
     def inner(user_str):  
         try:
@@ -201,11 +204,15 @@ def show_number_phone(name):
             phones.remove(result)
         return result
 
+#ф-ция возвращает запись, если есть совпадения в цифрах или буквах                   
+                   
 @input_error
 def find_overlaps(data):
     result = addressbook.find_record(data)
     return result
 
+#ф-ция определяет, ск. дней ост. до д.р.                   
+                   
 @input_error
 def to_birthday(name):
     if name.isalpha() == False:
