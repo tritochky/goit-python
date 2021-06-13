@@ -1,74 +1,58 @@
 from collections import UserDict
 from datetime import datetime, timedelta
-import json
-import pathlib
 import re
-import sys
 
 
 #Создаю классы
 
 class AddressBook(UserDict): 
     def add_record(self, record):
-        self.data[record.name] = record
-        print('A new record added for ', self.data[record.name].name)
-​
-    def all_records(self):
-        return self.data
-​
-    def __iter__(self):
-        self.number = 0
-        return self
-​
-# итератор для пагинации
-    def __next__(self):
-        n = input(int('How much recordes do show? '))
-        i = 0
-        for key, value in self.data.items():
-             if i == n:
-                raise StopIteration
-             else:
-                return (key, value)
-                i += 1
-​
-    def find_record(self, user_string):
-        persons_list = []
+        self.data[record.name.value] = record
+
+        # итератор для пагинации
+
+    def iterator(self, n):
+        if len(self.data) < n:
+            raise IndexError()
+        else:
+            data_list = list(self.data.items())
+            while data_list:
+                result = '\n'.join(
+                    [f'\n\tContact <{el[0]}> has following data:\
+                        \n\tbirthday info - {list(el[1].items())[0][1]}\
+                        \n\tphon/s - {"; ".join(list(el[1].items())[1][1])}' for el in data_list[:n]])
+                yield result
+                data_list = data_list[n:]
+
+    def find_record(self, user_string): 
+        persons_list = [] 
         if self.name.find(user_string) != -1 or self.phone.find(user_string) != -1:
             persons_list.append(self.name)
         print(persons_list)
         return
-​
-    def pack(self, file_name):
-        with open(file_name, "w") as fh:
-            json.self.data(some_data, fh)
-​
-    def unpack(self, file_name):
-        with open(file_name, "r") as fh:
-            my_address_book = json.load(fh)
-​
+
         
 class Record:
     def __init__(self, name, phone='', birthday=None):
         self.name = name
-        self.phones = []
-        self.new_phone = phone
+        self.phones = [phone]
         self.birthday = birthday
-​
+
     def add_birthday(self, birthday):
         self.birthday = birthday
-​
+
     def add_phone(self, phone):
         self.phones.append(phone)
-​
+
     def delete_phone(self, phone):
         self.phones.remove(phone)
-​
+
     def redact_phone(self, phone, new_phone):
         for i in range(len(self.phones)):
             if self.phones[i] == phone:
                 self.phones[i] = new_phone
-​
-    def day_to_birthday(self, name):
+
+    def day_to_birthday(self):
         current_day = datetime.now()
         current_year = current_day.year
         for self.name in self.data:
@@ -83,58 +67,59 @@ class Record:
             else:
                 raise Exception('Add user bithday')
                 
-​
+
 class Field:
-    def __init__(self):
+    def __init__(self, value):
         self.__value = None
-​
+        self.value = value
+
     @property
     def value(self):
         return self.__value
-​
+
     @value.setter
     def value(self, new_value):
         self.__value = new_value
-​
-​
+        
+        
 class Name(Field):
-    def __init__(self, name):
-        self.name = name
-​
-​
+    def __init__(self, value):
+        self.value = value
+
+
 class Birthday(Field):
-    def __init__(self, birthday):
-        self.__birthday = None
-        self.birthday = birthday
-​
+    def __init__(self, value):
+        self.value = value
+
     @property
     def value(self):
-        return self._value
-​
+        return self.__value
+
     @value.setter
     def value(self, new_value):
-        if self.new_value != pattern_birthday:
+        pattern_birthday = '\d{2}-\d{2}-\d{4}'
+        if new_value != pattern_birthday:
             raise Exception('Only number, please, in format DD-MM-YYYY')
         else :
-            self._value = new_value
+            self.__value = new_value 
     
-​
+
 class Phone(Field):
-    def __init__(self, phone):
-        self.__phone = None
-        self.phone = phone
-​
+    def __init__(self, value):
+        self.__value = None
+        self.value = value
+
     @property
     def value(self):
-        return self._value
-​
+        return self.__value
+
     @value.setter
     def value(self, new_value):
-        if self.new_value.isdigit() == False:
+        if new_value.isdigit() == False:
             raise Exception('Only number, please')
-        elif len(self.new_value) < 10:
+        elif len(new_value) < 10:
             raise Exception('This number is too short')
-        elif len(self.new_value) == 10:
-            self._value = '+38' + new_value
+        elif len(new_value) == 10:
+            self.__value = '+38' + new_value
         else:
-            self._value = '+' + new_value
+            self.__value = '+' + new_value
