@@ -1,25 +1,26 @@
 from classes import *
-import pathlib
+from  pathlib import Path
 import pickle
 import re
-import sys
-​
+
 
 address_book_file = 'data.bin'
-pattern_birthday = r'\d\d-\d\d-\d\d\d\d'
 
-​
  #Дальше основной код
-    
+
+#декоратор для обработки ошибок
+
 def input_error(func):
-    def inner(user_str):  
+    def inner(*args):  
         try:
-            result = func(user_str)
+            result = func(*args)
         except Exception as e:
             print("Error:", e)
         else:
             return result
     return inner
+
+#начало диалога
 
 @input_error
 def start(greeting):
@@ -32,17 +33,33 @@ def start(greeting):
     'show all' - show all address-book,
     'good bye', 'close' or 'exit' - finish working.
     How can I help you?'''
-    result = print(text')
+    result = print(text)
     return result
 
+#добавление записей
+
 @input_error
-def adding_new_record():
-    new_record = input('For adding a new record type `add record <name> <phone> <birthday>`')
+def adding_record(name, phone, birthday=None): 
+    '''new_record = input('For adding a new record type `add record <name> <phone> <birthday>`')
     new_record_to_add = new_record.split()
-    _, __, name, phone = new_record_to_add
-    address_book = AddressBook()
-    address_book.add_record(Record(name.strip(), phone, birthday))
-    save_dumped_data(address_book.all_records())
+    _, __, name, phone, birthday = new_record_to_add
+    address_book.add_record(Record(name.strip(), phone, birthday))'''
+    #создаю объекты классов
+    user_name = Name(name) 
+    user_phone = Phone(phone)
+    user_birthday = Birthday(birthday)
+    user_record = Record(name=user_name, phone=user_phone, birthday=user_birthday)
+    if name in address_book:
+        # использует метод класса Record для добавления телефона, если имя уже есть в книге
+        address_book.add_phone(user_phone)
+    else:
+        # использует метод класса AddressBook для добавления новой записи в книгу
+        address_book.add_record(user_record)
+    save_dumped_data(address_book)
+    result = print('Ok, done')
+    return result
+
+#меняет номер телефона или добавляет еще один
 
 @input_error
 def change(user_str):
@@ -57,6 +74,8 @@ def change(user_str):
             address_book[name].add_phone(number_phone) 
         result = print('Ok, done')
         return result
+
+#показывает номер телефона конкретного имени
         
 @input_error
 def show_number_phone(name):
@@ -67,17 +86,17 @@ def show_number_phone(name):
         result = print(address_book.get(name))
         answer = input('Do you want delete it? Y/N ')
         if answer == 'Y':
-            phones.remove(result)
+            address_book[name].remove(result)
         return result
 
 #ф-ция возвращает запись, если есть совпадения в цифрах или буквах                   
                    
 @input_error
-def find_overlaps(data):
-    result = addressbook.find_record(data)
+def find_overlaps(user_string):
+    result = address_book.find_record(user_string)
     return result
 
-#ф-ция определяет, ск. дней ост. до д.р.                   
+#определяет, ск. дней ост. до д.р.                   
                    
 @input_error
 def to_birthday(name):
@@ -87,14 +106,19 @@ def to_birthday(name):
         name = name.capitalize()
         result = print(address_book.day_to_birthday(name))
         return result
+
+#показывает все записи книги по частям
         
 @input_error
 def show_all_book(user_str):
     if address_book == {}:
         raise Exception('Your phonebook is empty')
     else:
-        result = address_book.__next__(data)
+        n = int(input('How many records should I show at once? '))
+        result = address_book.iterator(n)
         return result
+
+#заканчивает работу
 
 @input_error
 def finish(user_str):
@@ -103,11 +127,11 @@ def finish(user_str):
 
 COMMANDS = {
     'hello': start,
-    'add': adding_new_record,
+    'add': adding_record,
     'change': change,
     'phone': show_number_phone,
     'birthday': to_birthday,
-    'find': find_overlaps
+    'find': find_overlaps,
     'show all': show_all_book,
     'good bye': finish,
     'close': finish,
@@ -127,23 +151,23 @@ def read_dumped_data():
     with open(address_book_file, 'rb') as file:
         book = pickle.load(file)
         return book
-​
+
 def save_dumped_data(addresses):
     with open(address_book_file, 'wb') as file:
         pickle.dump(addresses, file)
-​
+
 
 if __name__ == '__main__':
     try:
         records_book = read_dumped_data()
         print('Records book existes.')
-        while True:
+    except EOFError:
+        print('No saved addresses book found')
+        address_book = AddressBook()
+    while True:
         user_str = input('Enter command: ')
         user_str = user_str.lower()
         func = get_command_handler(user_str)
         if user_str.startswith('good bye') or user_str.startswith('close') or user_str.startswith('exit'):
                 break
-    except EOFError:
-        print('No saved addresses book found')
-        adding_new_record()
-        
+
