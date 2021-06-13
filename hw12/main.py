@@ -40,10 +40,11 @@ def start(greeting):
 
 @input_error
 def adding_record(name, phone, birthday=None): 
-    '''new_record = input('For adding a new record type `add record <name> <phone> <birthday>`')
+    new_record = input('For adding a new record type `<name> <phone> <birthday>`')
     new_record_to_add = new_record.split()
-    _, __, name, phone, birthday = new_record_to_add
-    address_book.add_record(Record(name.strip(), phone, birthday))'''
+    name = new_record_to_add[0]
+    phone = new_record_to_add[1]
+    birthday = new_record_to_add[2]
     #создаю объекты классов
     user_name = Name(name) 
     user_phone = Phone(phone)
